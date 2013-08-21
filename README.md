@@ -33,3 +33,15 @@ A crawler that *slowly* walks through issues of the [American Archivist](http://
     "volume": "76"
 }
 ```
+
+Running
+-------
+
+If you want to run `crawl.py` you will need [Python](http://python.org) and 
+also to install the dependencies found in `requirements.txt`
+
+Running
+-------
+
+If you want to run `crawl.py` you will need [Python](http://python.org) and 
+also to install the dependencies found in `requirements.txt`.
