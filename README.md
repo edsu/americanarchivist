@@ -1,7 +1,7 @@
 americanarchivist
 =================
 
-This is a crawler that *slowly* walks through issues of the [American Archivist](http://archivists.metapress.com/content/120809) and records metadata for each article as JSON that will look something like this:
+This is a crawler that *slowly* walks through issues of the [American Archivist](http://archivists.metapress.com/content/120809) and records metadata for each article as JSON. The full results are available in the `metadata.json` file, where each article will look something like:
 
 ```javascript
 {
