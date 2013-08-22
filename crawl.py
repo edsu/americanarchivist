@@ -21,17 +21,12 @@ def get_article(url):
     table = doc.xpath('.//table[@class="MPReader_Content_PrimitiveHeadingControl"]')[0]
 
     # title 
-    title = table.xpath('./tr/td/h2/a')[0].text
     title = doc.xpath('.//title')[0].text.split("- American Archivist")[0].strip()
-
 
     tr = table.xpath('.//table/tr')
 
-    # subject
-    subject = [e.text for e in tr[3].xpath('.//a')]
+    # volume/issue
     m = re.match('Volume (\d+), Number (\d+)', tr[4].xpath('.//a')[0].text)
-
-    # volume
     volume, issue = m.groups()
 
     # pages
@@ -51,23 +46,24 @@ def get_article(url):
         href = a.attrib['href']
         if href and 'largest' in href:
             image = urlparse.urljoin(url, href)
-        elif href and 'fulltext.pdf' in href:
+        elif href and href.endswith('fulltext.pdf'):
             pdf = urlparse.urljoin(url, href)
 
-    # author 
+    # names
     div = doc.xpath('.//td[@class="mainPageContent"]/div')
+    names = []
     n = div[1].text.strip()
     if "," in n:
         names = [x.strip() for x in n.split(",")]
-    else:
-        names = [n.strip()]
+    elif n:
+        names = [n]
     for e in div[1].xpath('./sup'):
         if e.tail:
             a = e.tail.strip()
             a = re.sub("^, ", "", a)
-            author.append(a)
+            names.append(a)
 
-    # organization
+    # organizations
     orgs = []
     p = doc.xpath('.//td[@class="mainPageContent"]/p')
     if len(p) > 0:
@@ -75,6 +71,7 @@ def get_article(url):
             if e.tail:
                 orgs.append(e.tail.strip())
 
+    # combine names with orgs as author if we can
     author = []
     if len(names) == len(orgs):
         for i in range(0, len(names)):
@@ -84,7 +81,6 @@ def get_article(url):
             author.append({"name": names[i]})
 
     return {
-        "subject": subject,
         "volume": volume,
         "issue": issue,
         "pages": pages,
