@@ -12,6 +12,12 @@ import requests
 logging.basicConfig(filename="crawl.log", level=logging.INFO)
 web = requests.Session()
 
+def main():
+    metadata = open("metadata.txt", "w")
+    for article in articles():
+        metadata.write(json.dumps(article))
+        metadata.write("\n")
+
 def articles():
     for url in article_urls():
         yield get_article(url)
@@ -62,6 +68,16 @@ def get_article(url):
             a = e.tail.strip()
             a = re.sub("^, ", "", a)
             names.append(a)
+
+    # clean up the names
+    new_names = []
+    for name in names:
+        if " " not in name:
+            continue
+        if name in ["Editor", "Reviews Editor"]:
+            continue
+        new_names.append(name)
+    names = new_names
 
     # organizations
     orgs = []
@@ -120,12 +136,6 @@ def get(url):
     logging.info("getting %s", url)
     html = web.get(url, headers={"User-Agent": "americanarchivist: http://github.com/edsu/americanarchivist"}).content
     return lxml.html.fromstring(html)
-
-def main():
-    metadata = open("metadata.txt", "w")
-    for article in articles():
-        metadata.write(json.dumps(article))
-        metadata.write("\n")
 
 if __name__ == "__main__":
     main()
