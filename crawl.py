@@ -13,10 +13,17 @@ logging.basicConfig(filename="crawl.log", level=logging.INFO)
 web = requests.Session()
 
 def main():
-    metadata = open("metadata.txt", "w")
+    metadata = open("metadata.json", "w")
+    metadata.write("[\n")
+    count = 0
     for article in articles():
+        if count != 0:
+            metadata.write(",")
         metadata.write(json.dumps(article))
         metadata.write("\n")
+        count += 1
+    metadata.write("]\n")
+    metadata.close()
 
 def articles():
     for url in article_urls():

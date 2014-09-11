@@ -27,8 +27,7 @@ for a in articles:
         os.makedirs(dir_name)
 
     # last three volumes aren't available for free so don't store paywall html
-    resp = requests.get(a["pdf"])
-    print resp.headers["content-type"]
+    resp = requests.get(a["pdf"], verify=False)
     if resp.headers["content-type"] != "application/pdf":
         continue
 
